@@ -7,7 +7,7 @@ client_secret = "fd794532-d5aa-4a68-83e6-14e029e90e3d"
 
 variable "region" { default = "West US"}
 variable "username" { default = "adminuser" }
-variable "password" { default = "pwd12345" }
+variable "password" { default = "Adityanivas12345" }
 
 resource "azurerm_resource_group" "dev" {
   name     = "HelloWorld"
