@@ -8,7 +8,7 @@ client_secret = "fd794532-d5aa-4a68-83e6-14e029e90e3d"
 variable "region" { default = "West US"}
 
 # Create a resource group
-resource "azurerm_resource_group" "dev" {
+resource "azurerm_resource_group" "first-resource-group" {
   name     = "dev_resourcegroup"
   location = "${var.region}"
 }
