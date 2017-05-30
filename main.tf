@@ -40,7 +40,7 @@ resource "azurerm_network_interface" "dev" {
 }
 
 resource "azurerm_storage_account" "dev" {
-  name                = "devstorageacct"
+  name                = "adityanivas2017"
   resource_group_name = "${azurerm_resource_group.dev.name}"
   location            = "${var.region}"
   account_type        = "Standard_LRS"
@@ -54,7 +54,7 @@ resource "azurerm_storage_container" "dev" {
 }
 
 resource "azurerm_virtual_machine" "dev" {
-  name                  = "helloworld"
+  name                  = "dev-windows"
   location              = "${var.region}"
   resource_group_name   = "${azurerm_resource_group.dev.name}"
   network_interface_ids = ["${azurerm_network_interface.dev.id}"]
