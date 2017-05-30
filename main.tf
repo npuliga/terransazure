@@ -24,6 +24,19 @@ resource "azurerm_subnet" "dev" {
   address_prefix       = "10.0.2.0/24"
 }
 
+
+# create public IP
+resource "azurerm_public_ip" "dev" {
+    name = "dev-public-ip"
+    location = "West US"
+    resource_group_name = "${azurerm_resource_group.dev.name}"
+    public_ip_address_allocation = "static"
+
+    tags {
+        environment = "TerraformDemo"
+    }
+}
+
 resource "azurerm_network_interface" "dev" {
   name                = "dev-nic"
   location            = "${var.region}"
@@ -56,13 +69,12 @@ resource "azurerm_virtual_machine" "dev" {
   network_interface_ids = ["${azurerm_network_interface.dev.id}"]
   vm_size               = "Standard_A0"
 
-  storage_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2012-R2-Datacenter"
-    version   = "latest"
-  }
-
+storage_image_reference {
+  publisher       = "Canonical"
+  offer           = "UbuntuServer"
+  sku             = "14.04.2-LTS"
+  version         = "latest"
+      }
   storage_os_disk {
     name          = "myosdisk1"
     vhd_uri       = "${azurerm_storage_account.dev.primary_blob_endpoint}${azurerm_storage_container.dev.name}/myosdisk1.vhd"
@@ -75,4 +87,12 @@ resource "azurerm_virtual_machine" "dev" {
     admin_username = "${var.username}"
     admin_password = "${var.password}"
   }
+
+  provisioner "local-exec" {
+    command = "sleep 6m && uname -a > os.txt "
+  }
+}
+
+output "ip" {
+  value = "${azurerm_public_ip.dev.ip_address}"
 }
