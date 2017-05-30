@@ -6,9 +6,77 @@ client_secret = "fd794532-d5aa-4a68-83e6-14e029e90e3d"
 }
 
 variable "region" { default = "West US"}
+variable "username" { default = "adminuser" }
+variable "password" { default = "pwd12345" }
 
-# Create a resource group
-resource "azurerm_resource_group" "first-resource-group" {
-  name     = "dev_resourcegroup"
+resource "azurerm_resource_group" "dev" {
+  name     = "HelloWorld"
   location = "${var.region}"
+}
+
+resource "azurerm_virtual_network" "dev" {
+  name                = "dev-vir-nw"
+  address_space       = ["10.0.0.0/16"]
+  location            = "${var.region}"
+  resource_group_name = "${azurerm_resource_group.dev.name}"
+}
+
+resource "azurerm_subnet" "dev" {
+  name                 = "dev-subnet"
+  resource_group_name  = "${azurerm_resource_group.dev.name}"
+  virtual_network_name = "${azurerm_virtual_network.dev.name}"
+  address_prefix       = "10.0.2.0/24"
+}
+
+resource "azurerm_network_interface" "dev" {
+  name                = "dev-nic"
+  location            = "${var.region}"
+  resource_group_name = "${azurerm_resource_group.dev.name}"
+  ip_configuration {
+    name                          = "devipconfig1"
+    subnet_id                     = "${azurerm_subnet.dev.id}"
+    private_ip_address_allocation = "dynamic"
+  }
+}
+
+resource "azurerm_storage_account" "dev" {
+  name                = "devstorageacct"
+  resource_group_name = "${azurerm_resource_group.dev.name}"
+  location            = "${var.region}"
+  account_type        = "Standard_LRS"
+}
+
+resource "azurerm_storage_container" "dev" {
+  name                  = "dev-storage-container"
+  resource_group_name   = "${azurerm_resource_group.dev.name}"
+  storage_account_name  = "${azurerm_storage_account.dev.name}"
+  container_access_type = "private"
+}
+
+resource "azurerm_virtual_machine" "dev" {
+  name                  = "helloworld"
+  location              = "${var.region}"
+  resource_group_name   = "${azurerm_resource_group.dev.name}"
+  network_interface_ids = ["${azurerm_network_interface.dev.id}"]
+  vm_size               = "Standard_A0"
+
+  storage_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2012-R2-Datacenter"
+    version   = "latest"
+  }
+
+  storage_os_disk {
+    name          = "myosdisk1"
+    vhd_uri       = "${azurerm_storage_account.dev.primary_blob_endpoint}${azurerm_storage_container.dev.name}/myosdisk1.vhd"
+    caching       = "ReadWrite"
+    create_option = "FromImage"
+  }
+
+  os_profile {
+    computer_name  = "helloworld"
+    admin_username = "${var.username}"
+    admin_password = "${var.password}"
+  }
 }
