@@ -5,59 +5,55 @@ client_id = "6d93a675-e168-401e-8933-3515456da273"
 client_secret = "fd794532-d5aa-4a68-83e6-14e029e90e3d"
 }
 
-variable "region" { default = "West US"}
-variable "username" { default = "adminuser" }
-variable "password" { default = "Adityanivas12345" }
-
-resource "azurerm_resource_group" "dev" {
+resource "azurerm_resource_group" "${var.env}" {
   name     = "HelloWorld"
   location = "${var.region}"
 }
 
-resource "azurerm_virtual_network" "dev" {
-  name                = "dev-vir-nw"
+resource "azurerm_virtual_network" "${var.env}" {
+  name                = "${var.env}-vir-nw"
   address_space       = ["10.0.0.0/16"]
   location            = "${var.region}"
-  resource_group_name = "${azurerm_resource_group.dev.name}"
+  resource_group_name = "${azurerm_resource_group.${var.env}.name}"
 }
 
-resource "azurerm_subnet" "dev" {
-  name                 = "dev-subnet"
-  resource_group_name  = "${azurerm_resource_group.dev.name}"
-  virtual_network_name = "${azurerm_virtual_network.dev.name}"
+resource "azurerm_subnet" "${var.env}" {
+  name                 = "${var.env}-subnet"
+  resource_group_name  = "${azurerm_resource_group.${var.env}.name}"
+  virtual_network_name = "${azurerm_virtual_network.${var.env}.name}"
   address_prefix       = "10.0.2.0/24"
 }
 
-resource "azurerm_network_interface" "dev" {
-  name                = "dev-nic"
+resource "azurerm_network_interface" "${var.env}" {
+  name                = "${var.env}-nic"
   location            = "${var.region}"
-  resource_group_name = "${azurerm_resource_group.dev.name}"
+  resource_group_name = "${azurerm_resource_group.${var.env}.name}"
   ip_configuration {
-    name                          = "devipconfig1"
-    subnet_id                     = "${azurerm_subnet.dev.id}"
+    name                          = "${var.env}ipconfig1"
+    subnet_id                     = "${azurerm_subnet.${var.env}.id}"
     private_ip_address_allocation = "dynamic"
   }
 }
 
-resource "azurerm_storage_account" "dev" {
+resource "azurerm_storage_account" "${var.env}" {
   name                = "adityanivas2017"
-  resource_group_name = "${azurerm_resource_group.dev.name}"
+  resource_group_name = "${azurerm_resource_group.${var.env}.name}"
   location            = "${var.region}"
   account_type        = "Standard_LRS"
 }
 
-resource "azurerm_storage_container" "dev" {
-  name                  = "dev-storage-container"
-  resource_group_name   = "${azurerm_resource_group.dev.name}"
-  storage_account_name  = "${azurerm_storage_account.dev.name}"
+resource "azurerm_storage_container" "${var.env}" {
+  name                  = "${var.env}-storage-container"
+  resource_group_name   = "${azurerm_resource_group.${var.env}.name}"
+  storage_account_name  = "${azurerm_storage_account.${var.env}.name}"
   container_access_type = "private"
 }
 
-resource "azurerm_virtual_machine" "dev" {
-  name                  = "dev-windows"
+resource "azurerm_virtual_machine" "${var.env}" {
+  name                  = "${var.env}-windows"
   location              = "${var.region}"
-  resource_group_name   = "${azurerm_resource_group.dev.name}"
-  network_interface_ids = ["${azurerm_network_interface.dev.id}"]
+  resource_group_name   = "${azurerm_resource_group.${var.env}.name}"
+  network_interface_ids = ["${azurerm_network_interface.${var.env}.id}"]
   vm_size               = "Standard_A0"
 
   storage_image_reference {
@@ -69,7 +65,7 @@ resource "azurerm_virtual_machine" "dev" {
 
   storage_os_disk {
     name          = "myosdisk1"
-    vhd_uri       = "${azurerm_storage_account.dev.primary_blob_endpoint}${azurerm_storage_container.dev.name}/myosdisk1.vhd"
+    vhd_uri       = "${azurerm_storage_account.${var.env}.primary_blob_endpoint}${azurerm_storage_container.${var.env}.name}/myosdisk1.vhd"
     caching       = "ReadWrite"
     create_option = "FromImage"
   }
