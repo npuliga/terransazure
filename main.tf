@@ -24,6 +24,25 @@ resource "azurerm_subnet" "dev" {
   address_prefix       = "10.0.2.0/24"
 }
 
+resource "azurerm_network_security_group" "dev" {
+  name                = "dev-nwsg"
+  location            = "West US"
+  resource_group_name = "${azurerm_resource_group.dev.name}"
+}
+
+resource "azurerm_network_security_rule" "dev" {
+  name                        = "dev0100"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = "${azurerm_resource_group.dev.name}"
+  network_security_group_name = "${azurerm_network_security_group.dev.name}"
+}
 
 # create public IP
 resource "azurerm_public_ip" "dev" {
@@ -31,10 +50,6 @@ resource "azurerm_public_ip" "dev" {
     location = "West US"
     resource_group_name = "${azurerm_resource_group.dev.name}"
     public_ip_address_allocation = "static"
-
-    tags {
-        environment = "TerraformDemo"
-    }
 }
 
 resource "azurerm_network_interface" "dev" {
@@ -44,7 +59,9 @@ resource "azurerm_network_interface" "dev" {
   ip_configuration {
     name                          = "devipconfig1"
     subnet_id                     = "${azurerm_subnet.dev.id}"
+    network_security_group_id     = "${azurerm_network_security_group.dev.id}"
     private_ip_address_allocation = "dynamic"
+    public_ip_address_id = "${azurerm_public_ip.dev.id}"
   }
 }
 
@@ -83,13 +100,22 @@ storage_image_reference {
   }
 
   os_profile {
-    computer_name  = "helloworld"
+    computer_name  = "helloworld",
     admin_username = "${var.username}"
     admin_password = "${var.password}"
   }
 
-  provisioner "local-exec" {
-    command = "sleep 6m && uname -a > os.txt "
+  provisioner "file" {
+    source      = "apache2.yaml"
+    destination = "/home/adminuser"
+  }
+
+  provisioner "remote-exec" {
+  inline = [
+    "sudo apt-get install update -y",
+    "sudo apt-get install ansible git -y",
+    "mv /etc/ansible/hosts /etc/ansible/hosts.original",
+  ]
   }
 }
 
