@@ -104,7 +104,7 @@ storage_image_reference {
   }
 
   provisioner "local-exec" {
-   command = "ping 127.0.0.1 -n 100 >NUL"
+   command = "ping 127.0.0.1 -n 500 >NUL"
   }
 
   provisioner "file" {
