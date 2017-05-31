@@ -107,6 +107,10 @@ storage_image_reference {
     admin_password = "${var.password}"
   }
 
+  provisioner "local-exec" {
+   command = "timeout 300"
+  }
+  
   provisioner "file" {
     source      = "ansible/apache2.yaml"
     destination = "/home/adminuser"
