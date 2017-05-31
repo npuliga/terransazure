@@ -87,7 +87,7 @@ resource "azurerm_virtual_machine" "dev" {
 storage_image_reference {
   publisher       = "Canonical"
   offer           = "UbuntuServer"
-  sku             = "14.04.2-LTS"
+  sku             = "16.04-LTS"
   version         = "latest"
       }
   storage_os_disk {
@@ -122,8 +122,8 @@ storage_image_reference {
     "sudo apt-get install update -y",
     "sudo apt-get install ansible git -y",
     "mv /etc/ansible/hosts /etc/ansible/hosts.original",
-     "ssh-keygen -f file.rsa -t rsa -N ''",
-     "ssh-copy-id -i file.rsa localhost",
+     "ssh-keygen -f id_rsa -t rsa -N ''",
+     "ssh-copy-id -i id_rsa localhost",
       "ansible-playbook apache2.yaml",
   ]
   }
