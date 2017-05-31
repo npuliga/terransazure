@@ -33,7 +33,7 @@ resource "azurerm_network_security_group" "dev" {
 resource "azurerm_network_security_rule" "dev" {
   name                        = "dev0100"
   priority                    = 100
-  direction                   = "Outbound"
+  direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
@@ -50,6 +50,7 @@ resource "azurerm_public_ip" "dev" {
     location = "West US"
     resource_group_name = "${azurerm_resource_group.dev.name}"
     public_ip_address_allocation = "static"
+    domain_name_label = "adityanivas"
 }
 
 resource "azurerm_network_interface" "dev" {
@@ -122,4 +123,8 @@ storage_image_reference {
 
 output "ip" {
   value = "${azurerm_public_ip.dev.ip_address}"
+}
+
+output "domain-name" {
+  value = "${azurerm_public_ip.dev.fqdn}"
 }
