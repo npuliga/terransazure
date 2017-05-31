@@ -117,16 +117,6 @@ storage_image_reference {
     destination = "/etc/ansible"
   }
 
-  provisioner "remote-exec" {
-  inline = [
-    "sudo apt-get install update -y",
-    "sudo apt-get install ansible git -y",
-    "mv /etc/ansible/hosts /etc/ansible/hosts.original",
-     "ssh-keygen -f id_rsa -t rsa -N ''",
-     "ssh-copy-id -i id_rsa localhost",
-      "ansible-playbook apache2.yaml",
-  ]
-  }
 }
 
 output "ip" {
