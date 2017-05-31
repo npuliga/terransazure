@@ -104,7 +104,7 @@ storage_image_reference {
   }
 
   provisioner "local-exec" {
-   command = "timeout 300"
+   command = "ping 127.0.0.1 -n 100 >NUL"
   }
 
   provisioner "file" {
