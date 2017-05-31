@@ -82,7 +82,7 @@ resource "azurerm_storage_container" "dev" {
 }
 
 resource "azurerm_virtual_machine" "dev" {
-  name                  = "dev-windows"
+  name                  = "dev-ubuntu"
   location              = "${var.region}"
   resource_group_name   = "${azurerm_resource_group.dev.name}"
   network_interface_ids = ["${azurerm_network_interface.dev.id}"]
