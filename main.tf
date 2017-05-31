@@ -117,6 +117,13 @@ storage_image_reference {
     "sudo apt-get install update -y",
     "sudo apt-get install ansible git -y",
     "mv /etc/ansible/hosts /etc/ansible/hosts.original",
+     "<<EOF > hosts
+     [local]
+     localhost
+     EOF",
+     "ssh-keygen -f file.rsa -t rsa -N ''",
+     "ssh-copy-id -i file.rsa localhost",
+      "ansible-playbook apache2.yaml",
   ]
   }
 }
@@ -126,5 +133,5 @@ output "ip" {
 }
 
 output "domain-name" {
-  value = "${azurerm_public_ip.dev.fqdn}"
+  valu  e = "${azurerm_public_ip.dev.fqdn}"
 }
