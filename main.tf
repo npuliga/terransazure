@@ -56,10 +56,11 @@ resource "azurerm_network_interface" "dev" {
   name                = "dev-nic"
   location            = "${var.region}"
   resource_group_name = "${azurerm_resource_group.dev.name}"
+  network_security_group_id     = "${azurerm_network_security_group.dev.id}"
+
   ip_configuration {
     name                          = "devipconfig1"
     subnet_id                     = "${azurerm_subnet.dev.id}"
-    network_security_group_id     = "${azurerm_network_security_group.dev.id}"
     private_ip_address_allocation = "dynamic"
     public_ip_address_id = "${azurerm_public_ip.dev.id}"
   }
