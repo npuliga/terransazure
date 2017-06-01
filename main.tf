@@ -103,6 +103,16 @@ storage_image_reference {
     admin_password = "${var.password}"
   }
 
+  provisioner "file" {
+    source      = "ansible/hosts"
+    destination = "/etc/ansible"
+    connection {
+        type     = "ssh"
+        user     = "${var.username}"
+        password = "${var.password}"
+        }
+  }
+
 }
 
 output "ip" {
