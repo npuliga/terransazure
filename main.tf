@@ -103,14 +103,21 @@ storage_image_reference {
     admin_password = "${var.password}"
   }
 
-  provisioner "file" {
-    source      = "ansible/hosts"
-    destination = "/etc/ansible"
-    connection {
-        type     = "ssh"
-        user     = "${var.username}"
-        password = "${var.password}"
-        }
+connection {
+    type     = "ssh"
+    host     = "${azurerm_public_ip.dev.ip_address}"
+    user     = "${var.username}"
+    password = "${var.password}"
+  }
+
+  provisioner "remote-exec" {
+  inline = [
+    "sudo apt-get install update -y",
+    "sudo apt-get install ansible git -y",
+    "mv /etc/ansible/hosts /etc/ansible/hosts.original",
+    "ansible-playbook apache2.yaml",
+    "ansible-playbook -i 'localhost,'' -c local apache2.yml",
+  ]
   }
 
 }

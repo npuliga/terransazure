@@ -1,2 +1,5 @@
 [local]
 localhost
+
+[azurevm]
+adityanivas.westus.cloudapp.azure.com
