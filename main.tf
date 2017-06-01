@@ -103,22 +103,33 @@ storage_image_reference {
     admin_password = "${var.password}"
   }
 
+  os_profile_linux_config {
+      disable_password_authentication = true
+
+      ssh_keys {
+        path = "/home/${var.username}/.ssh/authorized_keys"
+        key_data = "${file("C:/dev/terransazure/ssh_keys/id_rsa.pub")}"
+      }
+    }
+
 connection {
     type     = "ssh"
     host     = "${azurerm_public_ip.dev.ip_address}"
     user     = "${var.username}"
-    password = "${var.password}"
+    private_key = "C:/dev/terransazure/ssh_keys/id_rsa"
   }
 
   provisioner "remote-exec" {
   inline = [
     "sudo apt-get install update -y",
     "sudo apt-get install ansible git -y",
-    "mv /etc/ansible/hosts /etc/ansible/hosts.original",
-    "ansible-playbook apache2.yaml",
-    "ansible-playbook -i 'localhost,'' -c local apache2.yml",
-  ]
-  }
+    ]
+ connection {
+     host     = "${azurerm_public_ip.dev.ip_address}"
+     user     = "admin"
+     private_key = "C:/dev/terransazure/ssh_keys/id_rsa"
+   }
+}
 
 }
 
