@@ -103,29 +103,6 @@ storage_image_reference {
     admin_password = "${var.password}"
   }
 
-  provisioner "file" {
-    source      = "ansible/apache2.yaml"
-    destination = "/home/adminuser"
-    connection {
-      type     = "ssh"
-      host     = "${azurerm_public_ip.dev.ip_address}"
-      user     = "${var.username}"
-      password = "${var.password}"
-    }
-
-  }
-
-  provisioner "file" {
-    source      = "ansible/hosts"
-    destination = "/etc/ansible"
-    connection {
-        type     = "ssh"
-        host     = "${azurerm_public_ip.dev.ip_address}"
-        user     = "${var.username}"
-        password = "${var.password}"
-        }
-  }
-
 }
 
 output "ip" {
