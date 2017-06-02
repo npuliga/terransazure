@@ -9,9 +9,15 @@
         state: latest
       notify:
         - restart apache2
+    - name: copies the file index.php
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: ansible
+        group: ansible
+        mode: 0644
    handlers:
     - name: restart apache2
       service:
         name: apache2
         state: restarted
-        copy: src=index.php dest=/var/www/html/index.php mode=0664
