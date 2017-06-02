@@ -40,13 +40,13 @@ resource "azurerm_network_security_rule" "dev" {
   network_security_group_name = "${azurerm_network_security_group.dev.name}"
 }
 
-# create public IP
+# Creating a public ip with 'nagap' prefix
 resource "azurerm_public_ip" "dev" {
     name = "dev-public-ip"
     location = "${var.region}"
     resource_group_name = "${azurerm_resource_group.dev.name}"
     public_ip_address_allocation = "static"
-    domain_name_label = "adityanivas"
+    domain_name_label = "nagap"
 }
 
 resource "azurerm_network_interface" "dev" {
@@ -64,7 +64,7 @@ resource "azurerm_network_interface" "dev" {
 }
 
 resource "azurerm_storage_account" "dev" {
-  name                = "adityanivas2017"
+  name                = "nagap2017"
   resource_group_name = "${azurerm_resource_group.dev.name}"
   location            = "${var.region}"
   account_type        = "Standard_LRS"
@@ -129,10 +129,21 @@ provisioner "file" {
       }
   }
 
+  provisioner "file" {
+      source      = "C:/dev/terransazure/ansible/index.html"
+      destination = "/home/${var.username}/index.html"
+      connection {
+          host     = "${azurerm_public_ip.dev.ip_address}"
+          user     = "${var.username}"
+          private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
+        }
+    }
+
   provisioner "remote-exec" {
   inline = [
     "sudo apt-get install update -y",
     "sudo apt-get install ansible git -y",
+    "ansible-playbook -i "localhost," -c local apache2.yml",
     ]
  connection {
      host     = "${azurerm_public_ip.dev.ip_address}"
@@ -140,7 +151,6 @@ provisioner "file" {
      private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
    }
 }
-
 }
 
 output "ip" {
