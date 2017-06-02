@@ -126,7 +126,7 @@ connection {
     ]
  connection {
      host     = "${azurerm_public_ip.dev.ip_address}"
-     user     = "admin"
+     user     = "${var.username}"
      private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
    }
 }
