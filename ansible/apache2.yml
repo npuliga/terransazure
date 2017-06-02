@@ -14,3 +14,4 @@
       service:
         name: apache2
         state: restarted
+        copy: src=index.php dest=/var/www/html/index.php mode=0664

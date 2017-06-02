@@ -22,7 +22,7 @@ resource "azurerm_subnet" "dev" {
 
 resource "azurerm_network_security_group" "dev" {
   name                = "dev-nwsg"
-  location            = "West US"
+  location            = "${var.region}"
   resource_group_name = "${azurerm_resource_group.dev.name}"
 }
 
@@ -43,7 +43,7 @@ resource "azurerm_network_security_rule" "dev" {
 # create public IP
 resource "azurerm_public_ip" "dev" {
     name = "dev-public-ip"
-    location = "West US"
+    location = "${var.region}"
     resource_group_name = "${azurerm_resource_group.dev.name}"
     public_ip_address_allocation = "static"
     domain_name_label = "adityanivas"
