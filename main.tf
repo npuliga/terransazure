@@ -64,7 +64,7 @@ resource "azurerm_network_interface" "dev" {
 }
 
 resource "azurerm_storage_account" "dev" {
-  name                = "nagap2017"
+  name                = "nagap2018"
   resource_group_name = "${azurerm_resource_group.dev.name}"
   location            = "${var.region}"
   account_type        = "Standard_LRS"
