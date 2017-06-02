@@ -119,6 +119,16 @@ connection {
     private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
   }
 
+provisioner "file" {
+    source      = "ansible/apache2.yaml"
+    destination = "/home/adminuser"
+    connection {
+        host     = "${azurerm_public_ip.dev.ip_address}"
+        user     = "${var.username}"
+        private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
+      }
+  }
+
   provisioner "remote-exec" {
   inline = [
     "sudo apt-get install update -y",
