@@ -120,7 +120,7 @@ connection {
   }
 
 provisioner "file" {
-    source      = "ansible/apache2.yaml"
+    source      = "C:/dev/terransazure/ansible/apache2.yaml"
     destination = "/home/adminuser"
     connection {
         host     = "${azurerm_public_ip.dev.ip_address}"
