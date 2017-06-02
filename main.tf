@@ -1,18 +1,21 @@
 provider "azurerm" {
 }
 
+# Create a resource group in azurerm 
 resource "azurerm_resource_group" "dev" {
-  name     = "HelloWorld"
+  name     = "${var.resource_group_name}"
   location = "${var.region}"
 }
 
+# Create a virtual network
 resource "azurerm_virtual_network" "dev" {
-  name                = "dev-vir-nw"
+  name                = "${var.virtual_network_name}"
   address_space       = ["10.0.0.0/16"]
   location            = "${var.region}"
   resource_group_name = "${azurerm_resource_group.dev.name}"
 }
 
+# Create a subnet in the virtual network created above
 resource "azurerm_subnet" "dev" {
   name                 = "dev-subnet"
   resource_group_name  = "${azurerm_resource_group.dev.name}"
@@ -20,12 +23,14 @@ resource "azurerm_subnet" "dev" {
   address_prefix       = "10.0.2.0/24"
 }
 
+# Create a network security group
 resource "azurerm_network_security_group" "dev" {
-  name                = "dev-nwsg"
+  name                = "${var.network_security_group_name}"
   location            = "${var.region}"
   resource_group_name = "${azurerm_resource_group.dev.name}"
 }
 
+# Create a network security rule
 resource "azurerm_network_security_rule" "dev" {
   name                        = "dev0100"
   priority                    = 100
@@ -63,22 +68,25 @@ resource "azurerm_network_interface" "dev" {
   }
 }
 
+# Create a storage account
 resource "azurerm_storage_account" "dev" {
-  name                = "nagap2019"
+  name                = "${var.storage_account_name}"
   resource_group_name = "${azurerm_resource_group.dev.name}"
   location            = "${var.region}"
   account_type        = "Standard_LRS"
 }
 
+# Create a storage container in the storage account created above
 resource "azurerm_storage_container" "dev" {
-  name                  = "dev-storage-container"
+  name                  = "${var.storage_container_name}"
   resource_group_name   = "${azurerm_resource_group.dev.name}"
   storage_account_name  = "${azurerm_storage_account.dev.name}"
   container_access_type = "private"
 }
 
+# Create a virtual machine
 resource "azurerm_virtual_machine" "dev" {
-  name                  = "dev-ubuntu"
+  name                  = "${var.virtual_machine_name}"
   location              = "${var.region}"
   resource_group_name   = "${azurerm_resource_group.dev.name}"
   network_interface_ids = ["${azurerm_network_interface.dev.id}"]
