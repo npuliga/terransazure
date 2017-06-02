@@ -116,7 +116,7 @@ connection {
     type     = "ssh"
     host     = "${azurerm_public_ip.dev.ip_address}"
     user     = "${var.username}"
-    private_key = "C:/dev/terransazure/ssh_keys/id_rsa"
+    private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
   }
 
   provisioner "remote-exec" {
@@ -127,7 +127,7 @@ connection {
  connection {
      host     = "${azurerm_public_ip.dev.ip_address}"
      user     = "admin"
-     private_key = "C:/dev/terransazure/ssh_keys/id_rsa"
+     private_key = "${file("C:/dev/terransazure/ssh_keys/id_rsa")}"
    }
 }
 
