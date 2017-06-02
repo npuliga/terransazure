@@ -1,3 +1,3 @@
-variable "region" { default = "West US"}
+variable "region" { default = "West Central US"}
 variable "username" {}
 variable "password" {}
