@@ -143,7 +143,7 @@ provisioner "file" {
   inline = [
     "sudo apt-get install update -y",
     "sudo apt-get install ansible git -y",
-    "ansible-playbook -i "localhost," -c local apache2.yml",
+    "ansible-playbook -i 'localhost,' -c local apache2.yml",
     ]
  connection {
      host     = "${azurerm_public_ip.dev.ip_address}"
